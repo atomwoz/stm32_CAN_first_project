@@ -17,8 +17,13 @@ extern TIM_HandleTypeDef htim3;
 #define MAPPING_PWM_TO_TIMER_FACTOR 31.372549
 #define MAPPING_PWM_TO_TIMER_OFFSET 0
 
+#define MAPPING_LED_TO_PROCENT_FACTOR 10
+#define MAPPING_LED_TO_PROCENT_OFFSET 0
+
 #define LED_GREEN_Pin GPIO_PIN_5
 #define LED_GREEN_GPIO_Port GPIOA
+
+#define STATE_PUBLISH_DELAY 500
 
 void app_main(void);
 void decode_obd2_frame(uint32_t id, uint8_t *data, uint8_t dlc);
