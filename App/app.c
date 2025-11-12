@@ -4,12 +4,13 @@
 #include "stm32u5xx_hal.h"
 
 extern FDCAN_HandleTypeDef hfdcan1;
+extern TIM_HandleTypeDef htim3;
 int serial_printf(const char *format, ...);
 void serial_println(const char *str);
 void serial_print(const char *str);
 static HAL_StatusTypeDef send_can_frame(uint32_t id, uint8_t *data, uint8_t dlc);
 void rx_router();
-int32_t map_u8_to_i32(uint8_t input, float factor, float offset);
+int32_t map_u8_to_i32(uint8_t input, double factor, double offset);
 
 // Helper function to convert byte count to FDCAN DLC code
 static uint32_t dlc_to_code(uint8_t dlc) {
@@ -82,6 +83,11 @@ void app_main(void) {
 		serial_println("ERROR: Failed to start FDCAN");
 		return;
 	}
+	if(HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2) != HAL_OK)
+	{
+		serial_println("ERROR: Failed to start TIMER for PWM");
+		return;
+	}
 	serial_println("CAN driver Started");
 
 	while (1) {
@@ -112,7 +118,8 @@ void rx_router() {
 		break;
 
 	case CAN_MSG__IN_SIGNAL_FILL:
-		//TODO
+		__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, (uint32_t)  map_u8_to_i32(RxData[0], MAPPING_PWM_TO_TIMER_FACTOR , MAPPING_PWM_TO_TIMER_OFFSET));
+		serial_printf("INFO: PWM duty change request %u \r\n", RxData[0]);
 		break;
 
 	}
@@ -123,7 +130,7 @@ HAL_StatusTypeDef send_can_frame(uint32_t id, uint8_t *data, uint8_t dlc) {
 	FDCAN_TxHeaderTypeDef TxHeader;
 
 	TxHeader.Identifier = id;
-	TxHeader.IdType = FDCAN_STANDARD_ID;
+	TxHeader.IdType = FDCAN_EXTENDED_ID;
 	TxHeader.TxFrameType = FDCAN_DATA_FRAME;
 	TxHeader.DataLength = dlc_to_code(dlc);
 	TxHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
@@ -138,8 +145,8 @@ HAL_StatusTypeDef send_can_frame(uint32_t id, uint8_t *data, uint8_t dlc) {
 }
 
 //CAn values mappping utils:
-int32_t map_u8_to_i32(uint8_t input, float factor, float offset) {
-	return (int32_t) ((float) input * factor) + offset;
+int32_t map_u8_to_i32(uint8_t input, double factor, double offset) {
+	return (int32_t) ((double) input * factor) + offset;
 }
 float map_u8_to_float(uint8_t input, float factor, float offset) {
 	// Explicitly cast input to float for clarity in the calculation
