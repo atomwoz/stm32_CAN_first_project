@@ -1,0 +1,8 @@
+{
+  "board": "NUCLEO-U545RE-Q",
+  "device": "STM32U545RET6Q",
+  "toolchain": "GCC",
+  "core": "Cortex-M33",
+  "order": 0,
+  "tz": "TZ-disabled"
+}
