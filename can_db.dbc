@@ -40,15 +40,17 @@ BO_ 100 LED: 1 STM32_eval
  SG_ Interval : 0|8@1+ (3.53,100) [100|1000] "mS" Vector__XXX
 
 BO_ 110 Signal_Fill: 1 STM32_eval
- SG_ Fill : 0|8@1+ (0.39,0) [0|100] "%" Vector__XXX
+ SG_ Fill : 0|8@1+ (31.72,0) [0|8000] "PWM Duty" Vector__XXX
 
-BO_ 2047 OUT_CAN_Diag: 2 STM32_eval
- SG_ PWM : 0|8@1+ (0.39,0) [0|100] "%" Vector__XXX
- SG_ LED_Interval : 8|8@1+ (3.53,100) [100|1000] "mS" Vector__XXX
+BO_ 2147914784 OUT_CAN_Diag: 2 STM32_eval
+ SG_ PWM : 0|8@1+ (31.372,0) [0|8000] "PWM Duty" Vector__XXX
+ SG_ LED_Interval : 8|8@1+ (3.53,100) [0|100] "%" Vector__XXX
 
 
 
-CM_ BO_ 2047 "ID: 0x69420";
+CM_ SG_ 110 Fill "It's PWM Duty from 0->8000 (0->100%)
+";
+CM_ BO_ 2147914784 "";
 BA_DEF_  "BusType" STRING ;
 BA_DEF_ BO_  "CANFD_BRS" ENUM  "0","1";
 BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
@@ -58,5 +60,5 @@ BA_DEF_DEF_  "VFrameFormat" "StandardCAN";
 BA_ "BusType" "CAN FD";
 BA_ "VFrameFormat" BO_ 100 0;
 BA_ "VFrameFormat" BO_ 110 0;
-BA_ "VFrameFormat" BO_ 2047 0;
+BA_ "VFrameFormat" BO_ 2147914784 1;
 
